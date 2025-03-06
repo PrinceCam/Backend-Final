@@ -1,44 +1,39 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Route, Routes } from "react-router-dom";
 
 import "./App.css";
 import axios from "axios";
-import TodoList from './TodoList'
+import TodoList from './TodoList';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   const [login, setLogin] = useState({
-    usename: "",
+    username: "",
     password: "",
   });
   const [register, setRegister] = useState({
-    usename: "",
+    username: "",
     password: "",
   });
 
-  const nav = useNavigate();
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
-    console.log("login", e.target.value);
-    setLogin((prev) => {
-      console.log("prev", prev);
-      return {
-        ...prev,
-        [e.target.id]: e.target.value,
-      };
-    });
+    setLogin((prev) => ({
+      ...prev,
+      [e.target.id]: e.target.value,
+    }));
   };
 
-  const handleLogSubmit = () => {
-    console.log(login);
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
     axios({
       method: "post",
-      url: "http://localhost:3000/login",
+      url: "http://localhost:3000/auth/login",
       data: login,
       withCredentials: true,
     })
       .then((res) => {
-        console.log("res", res.data);
         if (res.data.msg === "good login") {
           navigate("/TodoList");
         } else {
@@ -47,50 +42,48 @@ function App() {
       })
       .catch((error) => console.log(error));
   };
+
   const handleRegister = (e) => {
-    console.log("reg", register)
-    setRegister(prev => ({
+    setRegister((prev) => ({
       ...prev,
-      [e.target.id]: e.target.value
-    }))
-  }
+      [e.target.id]: e.target.value,
+    }));
+  };
+
   const handleRegisterSubmit = (e) => {
-    console.log("reg", register)
+    e.preventDefault();
     axios({
       method: 'post',
-      url: 'http://localhost:3000/register',
-      data: register
+      url: 'http://localhost:3000/auth/register',
+      data: register,
     })
       .then(res => console.log("res", res.data))
-      .catch(error => console.log(error))
-  }
+      .catch(error => console.log(error));
+  };
 
   return (
-      <Routes>
-        <Route path="/" element={
-          <>
-          {/**add login */}
+    <Routes>
+      <Route path="/" element={
+        <>
           <div id="login">
             <h1>Login</h1>
-            <input id="username" onChange={(e) => handleLogin(e)} type="text" placeholder="Username" />
+            <input id="username" onChange={handleLogin} type="text" placeholder="Username" />
             <br />
-            <input id="password" onChange={(e) => handleLogin(e)} type="text" placeholder="Password" />
-            <button onClick={() => handleLoginSubmit()}>Login</button>
+            <input id="password" onChange={handleLogin} type="password" placeholder="Password" />
+            <button onClick={handleLoginSubmit}>Login</button>
           </div>
-          {/**add register */}
           <div id="register">
-            <h1>Register</h1>
-            <input id="username" onChange={(e) => handleRegister(e)} type="text" placeholder="Username" />
-            <input id="password" onChange={(e) => handleRegister(e)} type="text" placeholder="Password" />
-            <button onClick={() => handleRegisterSubmit()}>Register</button>
+            <h1>New User</h1>
+            <input id="username" onChange={handleRegister} type="text" placeholder="Username" />
+            <input id="password" onChange={handleRegister} type="password" placeholder="Password" />
+            <button onClick={handleRegisterSubmit}>Enter</button>
           </div>
         </>
-        }/>
-        <Route path="/TodoList" element={<ProtectedRoute />} />
-        <Route path="t" element={<TodoList />}/>
-      </Routes>
-  )
+      }/>
+      <Route path="/TodoList" element={<ProtectedRoute />} />
+      <Route path="/t" element={<TodoList />} />
+    </Routes>
+  );
 }
-// add route to ToDo page
 
-export default App
+export default App;
