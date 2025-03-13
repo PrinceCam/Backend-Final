@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const { Auth } = require("../model/model")
+const  Auth  = require('../model/model')
 
 const middleware = (req, res, next) => {
     console.log("MiddleWare HITTTTTTTTT");
