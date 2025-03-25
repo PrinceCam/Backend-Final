@@ -1,17 +1,16 @@
 const express = require("express");
-const router = express.Router();
+//const router = express.Router();
 const Controller = require("../controller/controller");
 const MiddleWare = require("../middleware/middleware");
 
+module.exports = (app) => {
+  app.post("/create", MiddleWare, Controller.create);
 
-router.get("/test", Controller.test);
+  app.get("/test", Controller.test);
 
-router.get("/gettodos", MiddleWare, Controller.gettodos);
+  app.get("/gettodos", MiddleWare, Controller.gettodos);
 
-router.post("/create", MiddleWare, Controller.create);
+  app.put("/edit/:id", MiddleWare, Controller.edit);
 
-router.delete("/delete/:id", MiddleWare, Controller.delete);
-
-router.put("/edit/:id", MiddleWare, Controller.edit);
-
-module.exports = router;
+  app.delete("/delete/:id", MiddleWare, Controller.delete);
+};

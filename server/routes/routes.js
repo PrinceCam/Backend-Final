@@ -18,4 +18,6 @@ module.exports = (app) => {
   app.delete("/delete/:id", MiddleWare, Controller.delete);
 
   app.put("/edit/:id", MiddleWare, Controller.edit);
+
+  
 };

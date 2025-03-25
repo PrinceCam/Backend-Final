@@ -11,7 +11,7 @@ const ProtectedRoute = () => {
     axios({
       method: "GET",
       withCredentials: true,
-      url: `http://localhost:3000/authCheck`,
+      url: `http://localhost:3000/auth/authCheck`,
     })
       .then((res) => {
         console.warn("PROT ROUTE auth res", res);

@@ -5,44 +5,26 @@ const mongoose = require('mongoose');
 const User = require('./model/User')
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
+const router = express.Router();
+
+require('dotenv').config()  //  gives access to .env file
 
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'http://localhost:5173',
   credentials: true
 }));
-app.use(bodyParser.json());
+app.use(express.json()); // instead of bodyParser
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.get("/test", (req, res)=> {
+  console.log("TREST:HIT")
+})
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-passport.use(new LocalStrategy(
-  function(username, password, done) {
-    User.findOne({ username: username }, function (err, user) {
-      if (err) { return done(err); }
-      if (!user) { return done(null, false, { message: 'Incorrect username.' }); }
-      if (!user.validPassword(password)) { return done(null, false, { message: 'Incorrect password.' }); }
-      return done(null, user);
-    });
-  }
-));
-
-passport.serializeUser(function(user, done) {
-  done(null, user.id);
-});
-
-passport.deserializeUser(function(id, done) {
-  User.findById(id, function (err, user) {
-    done(err, user);
-  });
-});
-
-mongoose.connect('mongodb://localhost:27017/todoapp', {
+mongoose.connect(process.env.MONGO_URI, {
 }).then(() => {
   console.log('Connected to MongoDB');
 }).catch((err) => {
